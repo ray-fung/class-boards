@@ -1,46 +1,31 @@
-import socket
-import threading
+# CSE 461 Project 3
+# Jessica, Jeffrey, Ray
 
-def sending_thrd(socket):
-    while True:
-        send_msg = input("Message:")
-        if send_msg == 'exit':
-            socket.close()
-            return False
-        socket.send(bytes(send_msg, 'utf-8'))
-
-def receiving_thrd(socket):
-    while True:
-        recv_msg = socket.recv(1024)
-        print (str(recv_msg, 'utf-8'))
-
-client_socket = socket.socket()
+import socket,select
 port = 12345
-ATTU6 = '128.208.1.135'
-client_socket.connect((ATTU6,port))
-#recieve connection message from server
-recv_msg = client_socket.recv(1024)
-print (recv_msg)
-#send user details to server
-send_msg = input("Enter your user name(prefix with #):")
-client_socket.send(bytes(send_msg, 'utf-8'))
-user = send_msg[1:]
-#receive and send message from/to different user/s
-
-threads = []
-send_thread = threading.Thread(target=sending_thrd, args=(client_socket,))
-send_thread.start()
-receiving_thrd = threading.Thread(target=receiving_thrd, args=(client_socket,))
-receiving_thrd.start()
-"""
+socket_list = []
+users = {}
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+server_socket.bind(('',port))
+server_socket.listen(5)
+socket_list.append(server_socket)
 while True:
-    recv_msg = client_socket.recv(1024)
-    print (str(recv_msg, 'utf-8'))
-    send_msg = input("Send your message in format [@user:message] ")
-    if send_msg == 'exit':
-        break
-    else:
-        client_socket.send(bytes(send_msg, 'utf-8'))
-"""
-
-#client_socket.close()
+    ready_to_read,ready_to_write,in_error = select.select(socket_list,[],[],0)
+    for sock in ready_to_read:
+        if sock == server_socket:
+            connect, addr = server_socket.accept()
+            socket_list.append(connect)
+            connect.send(bytes("You are connected from:" + str(addr), 'utf-8'))
+        else:
+            data = sock.recv(1024)
+            data = str(data, 'utf-8')
+            print(data)
+            if data.startswith("#"):
+                users[data[1:].lower()]=connect
+                print ("User " + data[1:] +" added.")
+                connect.send(bytes("Your user detail saved as : "+str(data[1:]), 'utf-8'))
+            else:
+                for connection in users.values():
+                    connection.send(bytes(data, 'utf-8'))
+server_socket.close() 
