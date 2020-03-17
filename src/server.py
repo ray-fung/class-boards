@@ -62,20 +62,21 @@ while True:
             # Gives us new socket, the other returned object is ip/port
             client_socket, client_address = server_socket.accept()
 
-            # # Client should send his name right away, receive it
-            # user = receive_message(client_socket)
+            # Client should send his name right away, receive it
+            user = receive_message(client_socket)
 
-            # # If False - client disconnected before he sent his name
-            # if user is False:
-            #     continue
+            # If False - client disconnected before he sent his name
+            if user is False:
+                continue
 
             # Add accepted socket to select.select() list
             sockets_list.append(client_socket)
 
             # Also save username and username header
-            # clients[client_socket] = user
+            clients[client_socket] = user
 
-            client_socket.send(bytes("You are connected from:" + str(client_address), 'utf-8'))
+            # client_socket.send(bytes("You are connected from:" + str(client_address), 'utf-8'))
+            print('Accept connection from: {}:{}, username: {}'.format(*client_address, user['data'].decode('utf-8')))
 
         # Else existing socket is sending a message
         else:
@@ -107,6 +108,11 @@ while True:
                 if client_socket != notified_socket:
                     #Send user and message
                     client_socket.send(user['header'] + user['data'] + message['header'] + message['data'])
+
+    for notified_socket in exception_sockets:
+        sockets_list.remove(notified_socket)
+
+        del clients[notified_socket]
 
 
 
