@@ -62,28 +62,61 @@ while True:
             # Gives us new socket, the other returned object is ip/port
             client_socket, client_address = server_socket.accept()
 
-            # Client should send his name right away, receive it
-            user = receive_message(client_socket)
+            # # Client should send his name right away, receive it
+            # user = receive_message(client_socket)
 
-            # If False - client disconnected before he sent his name
-            if user is False:
-                continue
-
+            # # If False - client disconnected before he sent his name
+            # if user is False:
+            #     continue
 
             # Add accepted socket to select.select() list
             sockets_list.append(client_socket)
+
+            # Also save username and username header
+            # clients[client_socket] = user
+
             client_socket.send(bytes("You are connected from:" + str(client_address), 'utf-8'))
 
         # Else existing socket is sending a message
         else:
-            data = notified_socket.recv(1024)
-            data = str(data, 'utf-8')
-            print(data)
-            if data.startswith("#"):
-                clients[data[1:].lower()]=client_socket
-                print ("User " + data[1:] +" added.")
-                client_socket.send(bytes("Your user detail saved as : " + str(data[1:]), 'utf-8'))
-            else:
-                for connection in clients.values():
-                    connection.send(bytes(data, 'utf-8'))
-server_socket.close() 
+            # Receive message
+            # data = notified_socket.recv(1024)
+            # data = str(data, 'utf-8')
+            # print(data)
+
+            # Receive message
+            message = receive_message(notified_socket)
+
+            # If false, client disconnected, cleanup
+            if message is False:
+                print('Closed connection from: {}'.format(clients[notified_socket]['data'].decode('utf-8')))
+                # Remove from list for socket.socket()
+                sockets_list.remove(notified_socket)
+                # Remove from our list of users
+                del clients[notified_socket]
+                continue
+
+            # Get user by notified socket, so we know who sent the message
+            user = clients[notified_socket]
+
+            print(f'Received message from {user["data"].decode("utf-8")}: {message["data"].decode("utf-8")}')
+
+            # Iterate over connected clients and broadcast message
+            for client_socket in clients:
+                # But don't sent it to sender
+                if client_socket != notified_socket:
+                    #Send user and message
+                    client_socket.send(user['header'] + user['data'] + message['header'] + message['data'])
+
+
+
+            # if data.startswith("#"):
+            #     clients[data[1:].lower()]=client_socket
+            #     print ("User " + data[1:] +" added.")
+            #     client_socket.send(bytes("Your user detail saved as : " + str(data[1:]), 'utf-8'))
+#             else:
+#                 # Iterate over connected clients and broadcast message
+#                 for client_socket in clients:
+#
+#                     connection.send(bytes(data, 'utf-8'))
+# server_socket.close()
