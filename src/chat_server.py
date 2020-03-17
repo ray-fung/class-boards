@@ -19,7 +19,7 @@ server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 # Bind, so server informs operating system that it's going to use given IP and port
 # For a server using 0.0.0.0 means to listen on all available interfaces, useful to connect locally to 127.0.0.1 and remotely to LAN interface IP
-server_socket.bind((IP, PORT))
+server_socket.bind(('', PORT))
 
 # This makes server listen to new connections
 server_socket.listen()
