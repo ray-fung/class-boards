@@ -7,7 +7,7 @@ HEADER_LENGTH = 10
 
 # IP = "127.0.0.1"
 IP = "128.208.1.135"
-PORT = 22
+PORT = 1234
 my_username = input("Username: ")
 
 # Create a socket
