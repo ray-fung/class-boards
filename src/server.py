@@ -12,7 +12,7 @@ IP = "128.208.1.135"
 # Create a socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server_socket.bind(('', PORT))
+server_socket.bind((IP, PORT))
 # Listen to new connections
 server_socket.listen(5)
 # List of sockets
