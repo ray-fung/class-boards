@@ -38,10 +38,8 @@ while True:
 
         # Encode message to bytes, prepare header and convert to bytes, like for username above, then send
         message = message.encode('utf-8')
-        print("message : " + message)
 
         message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
-        print("message_header : " + message_header)
 
         client_socket.send(message_header + message)
 

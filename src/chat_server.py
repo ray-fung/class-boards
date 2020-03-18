@@ -86,6 +86,7 @@ while True:
 
         # If notified socket is a server socket - new connection, accept it
         if notified_socket == server_socket:
+            print("new connection")
 
             # Accept new connection
             # That gives us new socket - client socket, connected to this given client only, it's unique for that client
@@ -94,6 +95,8 @@ while True:
 
             # Client should send his name right away, receive it
             user = receive_message(client_socket)
+
+            print("user : " + user)
 
             # If False - client disconnected before he sent his name
             if user is False:
@@ -109,6 +112,8 @@ while True:
 
         # Else existing socket is sending a message
         else:
+
+            print("exisiting socket is sending message")
 
             # Receive message
             message = receive_message(notified_socket)
