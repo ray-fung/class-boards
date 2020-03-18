@@ -14,7 +14,7 @@ my_username = input("Username: ")
 # socket.AF_INET - address family, IPv4, some otehr possible are AF_INET6, AF_BLUETOOTH, AF_UNIX
 # socket.SOCK_STREAM - TCP, conection-based, socket.SOCK_DGRAM - UDP, connectionless, datagrams, socket.SOCK_RAW - raw IP packets
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+print("client1")
 # Connect to a given ip and port
 client_socket.connect((IP, PORT))
 
@@ -26,8 +26,9 @@ client_socket.setblocking(False)
 username = my_username.encode('utf-8')
 username_header = "{len(username):<{HEADER_LENGTH}}".encode('utf-8')
 client_socket.send(username_header + username)
-
+print("client2")
 while True:
+    print("client3")
 
     # Wait for user to input a message
     message = input(my_username + ' > ')

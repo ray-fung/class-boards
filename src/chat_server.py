@@ -11,6 +11,7 @@ PORT = 1234
 # socket.AF_INET - address family, IPv4, some otehr possible are AF_INET6, AF_BLUETOOTH, AF_UNIX
 # socket.SOCK_STREAM - TCP, conection-based, socket.SOCK_DGRAM - UDP, connectionless, datagrams, socket.SOCK_RAW - raw IP packets
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+print("server1")
 
 # SO_ - socket option
 # SOL_ - socket option level
@@ -32,7 +33,7 @@ sockets_list = [server_socket]
 clients = {}
 
 print(f'Listening for connections on {IP}:{PORT}...')
-
+print("server2")
 # Handles message receiving
 def receive_message(client_socket):
 
@@ -60,6 +61,7 @@ def receive_message(client_socket):
         return False
 
 while True:
+    print("server3")
 
     # Calls Unix select() system call or Windows select() WinSock call with three parameters:
     #   - rlist - sockets to be monitored for incoming data
