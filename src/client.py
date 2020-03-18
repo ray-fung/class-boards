@@ -1,6 +1,6 @@
 import socket
 import threading
-import queue
+import sys
 
 def sending_thrd(socket):
     while True:
@@ -19,9 +19,19 @@ def receiving_thrd(socket):
         except:
             continue
 
+try:
+    if len(sys.argv) == 2:
+        port = int(sys.argv[1])
+    else:
+        print('Incorrect number of arguments')
+        print('Usage: client.py [port]')
+        exit()
+except:
+    print('The port you entered is invalid')
+    print('Usage: client.py [port]')
+    exit()
 
 client_socket = socket.socket()
-port = 12345
 ATTU6 = '128.208.1.135'
 client_socket.connect((ATTU6,port))
 #receive connection message from server
@@ -29,7 +39,6 @@ recv_msg = client_socket.recv(1024)
 print (recv_msg)
 
 #receive and send message from/to different user/s
-inputQueue = queue.Queue()
 
 threads = []
 receiving_thrd = threading.Thread(target=receiving_thrd, args=(client_socket,))
