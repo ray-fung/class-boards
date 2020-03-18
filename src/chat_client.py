@@ -30,10 +30,11 @@ username = my_username.encode('utf-8')
 user = f"{len(username):<{HEADER_LENGTH}}"
 print("user : " + user)
 print("user length: " + str(len(user)))
-username_header = f"{len(username):<{HEADER_LENGTH}}".encode('utf-8')
 
+username_header = f"{len(username):<{HEADER_LENGTH}}".encode('utf-8')
 client_socket.send(username_header + username)
 print("client2")
+
 while True:
 
     # Wait for user to input a message
