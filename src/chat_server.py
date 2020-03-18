@@ -42,7 +42,8 @@ def receive_message(client_socket):
         # Receive our "header" containing message length, it's size is defined and constant
         message_header = client_socket.recv(HEADER_LENGTH)
 
-        print("message_header : " + str(len(message_header)))
+        print("message_header : " + message_header)
+        print("message_header length: " + str(len(message_header)))
 
         # If we received no data, client gracefully closed a connection, for example using socket.close() or socket.shutdown(socket.SHUT_RDWR)
         if not len(message_header):
@@ -53,9 +54,13 @@ def receive_message(client_socket):
         # Convert header to int value
         message_length = int(message_header.decode('utf-8').strip())
 
-        print("message_length : " + str(len(message_length)))
+        print("message_length : " + message_length)
+        print("message_length length: " + str(len(message_length)))
 
         # Return an object of message header and message data
+        data = client_socket.recv(message_length)
+        print("data : " + data)
+        print("data length: " + str(len(data)))
         return {'header': message_header, 'data': client_socket.recv(message_length)}
 
     except:
