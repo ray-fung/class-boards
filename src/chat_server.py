@@ -53,7 +53,7 @@ def receive_message(client_socket):
         # Convert header to int value
         message_length = int(message_header.decode('utf-8').strip())
 
-        print("message_length")
+        print("message_length : " + str(len(message_length)))
 
         # Return an object of message header and message data
         return {'header': message_header, 'data': client_socket.recv(message_length)}

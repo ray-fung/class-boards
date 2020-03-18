@@ -24,7 +24,10 @@ client_socket.setblocking(False)
 # Prepare username and header and send them
 # We need to encode username to bytes, then count number of bytes and prepare header of fixed size, that we encode to bytes as well
 username = my_username.encode('utf-8')
-username_header = "{len(username):<{HEADER_LENGTH}}".encode('utf-8')
+user = "{len(username):<{HEADER_LENGTH}}"
+print("user : " + user)
+username_header = user.encode('utf-8')
+
 client_socket.send(username_header + username)
 print("client2")
 while True:
