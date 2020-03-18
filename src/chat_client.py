@@ -28,18 +28,21 @@ username_header = "{len(username):<{HEADER_LENGTH}}".encode('utf-8')
 client_socket.send(username_header + username)
 print("client2")
 while True:
-    print("client3")
 
     # Wait for user to input a message
     message = input(my_username + ' > ')
+
 
     # If message is not empty - send it
     if message:
 
         # Encode message to bytes, prepare header and convert to bytes, like for username above, then send
         message = message.encode('utf-8')
+        print("message : " + message)
 
         message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
+        print("message_header : " + message_header)
+
         client_socket.send(message_header + message)
 
     try:
@@ -48,6 +51,7 @@ while True:
 
             # Receive our "header" containing username length, it's size is defined and constant
             username_header = client_socket.recv(HEADER_LENGTH)
+            print("username_header : " + username_header)
 
             # If we received no data, server gracefully closed a connection, for example using socket.close() or socket.shutdown(socket.SHUT_RDWR)
             if not len(username_header):
@@ -59,6 +63,7 @@ while True:
 
             # Receive and decode username
             username = client_socket.recv(username_length).decode('utf-8')
+            print("username : " + username)
 
             # Now do the same for message (as we received username, we received whole message, there's no need to check if it has any length)
             message_header = client_socket.recv(HEADER_LENGTH)

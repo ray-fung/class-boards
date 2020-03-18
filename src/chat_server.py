@@ -74,9 +74,11 @@ while True:
     # This is a blocking call, code execution will "wait" here and "get" notified in case any action should be taken
     read_sockets, _, exception_sockets = select.select(sockets_list, [], sockets_list)
 
-
+    print("read_sockets : " + read_sockets)
+    print("exception_sockets : " + exception_sockets)
     # Iterate over notified sockets
     for notified_socket in read_sockets:
+        print("notified_socket : " + notified_socket)
 
         # If notified socket is a server socket - new connection, accept it
         if notified_socket == server_socket:
