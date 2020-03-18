@@ -42,17 +42,23 @@ def receive_message(client_socket):
         # Receive our "header" containing message length, it's size is defined and constant
         message_header = client_socket.recv(HEADER_LENGTH)
 
+
         # If we received no data, client gracefully closed a connection, for example using socket.close() or socket.shutdown(socket.SHUT_RDWR)
         if not len(message_header):
             return False
 
+        print("message_header")
+
         # Convert header to int value
         message_length = int(message_header.decode('utf-8').strip())
+
+        print("message_length")
 
         # Return an object of message header and message data
         return {'header': message_header, 'data': client_socket.recv(message_length)}
 
     except:
+        print("exception case of receive_message")
 
         # If we are here, client closed connection violently, for example by pressing ctrl+c on his script
         # or just lost his connection
@@ -96,7 +102,7 @@ while True:
             # Client should send his name right away, receive it
             user = receive_message(client_socket)
 
-            # print("user : " + user)
+            print("user : ", bool(user))
 
             # If False - client disconnected before he sent his name
             if user is False:
