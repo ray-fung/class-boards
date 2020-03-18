@@ -81,8 +81,9 @@ while True:
 
     # Iterate over notified sockets
     for notified_socket in read_sockets:
-        print("notified_socket : " + notified_socket.getsockname())
-        print("notified_socket : " + notified_socket.getpeername())
+        
+        print(notified_socket.getsockname())
+        print(notified_socket.getpeername())
 
         # If notified socket is a server socket - new connection, accept it
         if notified_socket == server_socket:
