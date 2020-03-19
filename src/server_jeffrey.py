@@ -38,31 +38,27 @@ def removeConnection(conn):
 def listenMessages(conn):
     with conn:
         while True:
-            try:
-                data = conn.recv(1024)
-                if not data:
-                    removeConnection(conn)
-                    break
-                msg = data.decode("utf-8")
+            data = conn.recv(1024)
+            if not data:
+                removeConnection(conn)
+                break
+            msg = data.decode("utf-8")
 
-                lock.acquire()
-                if msg.startswith("refresh"):
-                    # Update which chat history this client will receive
-                    removeConnection(conn)
-                    new_course = msg.split(': ')[1]
-                    connectionToCourse[conn] = new_course
-                    courseToConnections[new_course].append(conn)
-                    print("Updated client to receive messages from course {}".format(new_course))
-                else:
-                    # Updates chat history with new message
-                    course = connectionToCourse[conn]
-                    courseToChatHistory[course].append(msg)
-                    print("Received message: {}".format(msg))
-                condition.notify()  # Sends possibly updated chat history to all clients
-            except OSError as e:
-                print(e)
-            finally:
-                lock.release()
+            lock.acquire()
+            if msg.startswith("refresh"):
+                # Update which chat history this client will receive
+                removeConnection(conn)
+                new_course = msg.split(': ')[1]
+                connectionToCourse[conn] = new_course
+                courseToConnections[new_course].append(conn)
+                print("Updated client to receive messages from course {}".format(new_course))
+            else:
+                # Updates chat history with new message
+                course = connectionToCourse[conn]
+                courseToChatHistory[course].append(msg)
+                print("Received message: {}".format(msg))
+            condition.notify()  # Sends possibly updated chat history to all clients
+            lock.release()
 
 def main():
     Thread(target=sendChats).start()
