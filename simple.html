@@ -1,0 +1,19 @@
+<h1>Chat with people in your classes</h1>
+<h2>A messageboard for every course at UW</h2>
+<p>Input your course: <textarea id="course" cols="10" rows="1">You're literally a bitch</textarea> <button type="button" id="course_button">Send</button></p>
+<p>Name: <textarea id="name" cols="10" rows="1">Asshole</textarea> <button type="button" id="name_button">Send</button></p>
+<p><textarea id="chatbox" cols="50" rows="20"> </textarea></p>
+<p>Send a message: </p>
+<p><textarea id="send" cols="40" rows="1"></textarea> <button type="button">Send</button></p>
+
+<p id="demo">Click me.</p>
+<script>
+    document.getElementById("demo").addEventListener("click", myFunction);
+    
+    function myFunction() {
+      document.getElementById("demo").innerHTML = "YOU CLICKED ME!";
+    }
+</script>
+
+<script src='./client.js'></script>
+<script>setup()</script>
