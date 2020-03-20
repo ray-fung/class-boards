@@ -65,14 +65,16 @@ def listenMessages(conn):
 def main():
     Thread(target=sendChats).start()
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(('', 21212))
+    s.bind(('', 21217))
     s.listen(5)
     try:
         while True:
             conn, _ = s.accept()
+            connectionToCourse[conn] = 'udub'
+            courseToConnections['udub'].append(conn)
             Thread(target=listenMessages, args=(conn,)).start()
             print("Started new thread with connection")
-    except Exception e:
+    except Exception as e:
         print(e)
     finally:
         s.close()
