@@ -40,7 +40,9 @@ def listenMessages(conn):
         while True:
             data = conn.recv(1024)
             if not data:
+            	print("Connection closed")
                 removeConnection(conn)
+                conn.close()
                 break
             msg = data.decode("utf-8")
 
@@ -63,13 +65,17 @@ def listenMessages(conn):
 def main():
     Thread(target=sendChats).start()
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(('localhost', 21212))
+    s.bind(('', 21212))
     s.listen(5)
-    with s:
-        while True:
-            conn, _ = s.accept()
-            Thread(target=listenMessages, args=(conn,)).start()
-            print("Started new thread with connection")
+    try:
+	    while True:
+	        conn, _ = s.accept()
+	        Thread(target=listenMessages, args=(conn,)).start()
+	        print("Started new thread with connection")
+	except Exception e:
+		print(e)
+	finally:
+		s.close()
 
 if __name__ == '__main__':
     main()
