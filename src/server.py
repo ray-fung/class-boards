@@ -36,35 +36,36 @@ def removeConnection(conn):
 # Listens for messages from client and then takes appropriate action, updating chat history
 # or which course the client is viewing
 def listenMessages(conn):
-    with conn:
-        while True:
-            data = conn.recv(1024)
-            if not data:
-                print("Connection closed")
-                removeConnection(conn)
-                conn.close()
-                break
-            msg = data.decode("utf-8")
+    while True:
+        data = conn.recv(1024)
+        if not data:
+            print("Connection closed")
+            removeConnection(conn)
+            conn.close()
+            break
+        msg = data.decode("utf-8")
 
-            lock.acquire()
-            if msg.startswith("refresh"):
-                # Update which chat history this client will receive
-                removeConnection(conn)
-                new_course = msg.split(': ')[1]
-                connectionToCourse[conn] = new_course
-                courseToConnections[new_course].append(conn)
-                print("Updated client to receive messages from course {}".format(new_course))
-            else:
-                # Updates chat history with new message
-                course = connectionToCourse[conn]
-                courseToChatHistory[course].append(msg)
-                print("Received message: {}".format(msg))
-            condition.notify()  # Sends possibly updated chat history to all clients
-            lock.release()
+        lock.acquire()
+        if msg.startswith("refresh"):
+            # Update which chat history this client will receive
+            removeConnection(conn)
+            new_course = msg.split(': ')[1]
+            connectionToCourse[conn] = new_course
+            courseToConnections[new_course].append(conn)
+            print("Updated client to receive messages from course {}".format(new_course))
+        else:
+            # Updates chat history with new message
+            course = connectionToCourse[conn]
+            courseToChatHistory[course].append(msg)
+            print("Received message: {}".format(msg))
+        condition.notify()  # Sends possibly updated chat history to all clients
+        lock.release()
+    conn.close()
 
 def main():
     Thread(target=sendChats).start()
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind(('', 21217))
     s.listen(5)
     try:
