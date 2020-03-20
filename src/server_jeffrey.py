@@ -40,7 +40,7 @@ def listenMessages(conn):
         while True:
             data = conn.recv(1024)
             if not data:
-            	print("Connection closed")
+                print("Connection closed")
                 removeConnection(conn)
                 conn.close()
                 break
@@ -68,14 +68,14 @@ def main():
     s.bind(('', 21212))
     s.listen(5)
     try:
-	    while True:
-	        conn, _ = s.accept()
-	        Thread(target=listenMessages, args=(conn,)).start()
-	        print("Started new thread with connection")
-	except Exception e:
-		print(e)
-	finally:
-		s.close()
+        while True:
+            conn, _ = s.accept()
+            Thread(target=listenMessages, args=(conn,)).start()
+            print("Started new thread with connection")
+    except Exception e:
+        print(e)
+    finally:
+        s.close()
 
 if __name__ == '__main__':
     main()
